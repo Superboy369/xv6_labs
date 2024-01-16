@@ -5,6 +5,9 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 
+// gen ju mu lu jie gou di gui,
+// han shu yi yi shi cha zhao path luo jing xia de suo you wen jian shi fou 
+// he lost_file wen jian tong ming 
 void find(char *path,char *lost_file){
     char buf[128],*p;
     int fd,fd1;
@@ -69,7 +72,7 @@ int main(int argc,char *argv[]){
         exit(1);
     }
 
-    find(argv[1],argv[2]);
+    find(argv[1],argv[2]);  // di gui
 
     exit(0);
 }

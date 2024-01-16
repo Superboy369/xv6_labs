@@ -6,8 +6,8 @@
 
 void filter(int pleft[2]){
     int current_prime;
-    read(pleft[0],&current_prime,sizeof current_prime); // the first num must be prime.
-    if(current_prime == -1){
+    read(pleft[0],&current_prime,sizeof current_prime); // di yi ge shu bi ding shi su shu
+    if(current_prime == -1){  // -1 shi jie shu biao zhi
         exit(0);
     }
     printf("prime %d\n",current_prime);
@@ -24,13 +24,13 @@ void filter(int pleft[2]){
         // father process
         close(pright[0]);
         int buf;
-        // After filtering out multiples of the current prime number in the left pipe, the remaining numbers are fed into the right pipe
+        // cong you bian de pipe qu shu,shi yong dang qian su shu shai dao bei shu,jia sheng xia de shu chuan dao you bian de pipe
         while(read(pleft[0],&buf,sizeof buf) && buf != -1){ 
             if(buf % current_prime != 0){
                 write(pright[1],&buf,sizeof buf);
             }
         }
-        buf = -1;
+        buf = -1;  // jia shang -1 jie shu biao zhi
         write(pright[1],&buf,sizeof buf);
         wait((int *)0);
     }
@@ -54,7 +54,7 @@ int main(int argc,char *argv[]){
             write(input_pipe[1],&i,sizeof i);
         }
         i = -1;
-        write(input_pipe[1],&i,sizeof i);
+        write(input_pipe[1],&i,sizeof i); 
         wait((int *)0);
     }
     exit(0);
