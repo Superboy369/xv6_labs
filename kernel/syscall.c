@@ -105,6 +105,7 @@ extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
 extern uint64 sys_trace(void); // lab_2:add trace system call into the syscall.c
+extern uint64 sys_sysinfo(void); // lab_2:add sysinfo system call
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -129,6 +130,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_trace]   sys_trace, // lab_2:add trace system call into the syscall.c
+[SYS_sysinfo] sys_sysinfo, // lab_2;add sysinfo system call
 };
 
 // lab2-syscall: add the syscall_name table
@@ -155,6 +157,7 @@ const char *syscall_names[] = {
   [SYS_mkdir]   "mkdir",
   [SYS_close]   "close",
   [SYS_trace]   "trace",
+  [SYS_sysinfo] "sysinfo",
 };
 
 void

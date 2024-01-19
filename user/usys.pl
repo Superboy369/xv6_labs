@@ -37,3 +37,4 @@ entry("sbrk");
 entry("sleep");
 entry("uptime");
 entry("trace"); # lab_2:add trace system call into the usys.pl
+entry("sysinfo"); # lab_2:add sysinfo system call into the usys.pl

@@ -697,3 +697,16 @@ procdump(void)
     printf("\n");
   }
 }
+
+
+// lab_2: add sysinfo system call
+uint64 count_process_num(void){
+  uint64 process_num = 0;
+  for(struct proc *p = proc;p < &proc[NPROC];p ++ ){
+    if(p->state != UNUSED){
+      process_num ++ ;
+    }
+  }
+
+  return process_num;
+}

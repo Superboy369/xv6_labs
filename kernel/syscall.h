@@ -21,3 +21,4 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_trace  22 // lab_2:add trace system call into the syscall.h
+#define SYS_sysinfo 23 // lab_2:add sysinfo system call into the syscall.h

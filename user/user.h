@@ -1,6 +1,10 @@
 struct stat;
 struct rtcdate;
 
+// lab2:add sysinfo system call into the user.h
+struct sysinfo;
+int sysinfo(struct sysinfo *);
+
 // system calls
 int fork(void);
 int exit(int) __attribute__((noreturn));
@@ -24,6 +28,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int trace(int); // lab_2:add trace system call into the user.h
+int sysinfo(struct sysinfo*); // lab_2:add sysinfo system call into the user.h
 
 // ulib.c
 int stat(const char*, struct stat*);
