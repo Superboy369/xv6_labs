@@ -127,6 +127,8 @@ found:
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
+  p->syscall_mask = 0; // initiate the new added syscall_mask with 0
+
   return p;
 }
 
@@ -290,6 +292,8 @@ fork(void)
   np->cwd = idup(p->cwd);
 
   safestrcpy(np->name, p->name, sizeof(p->name));
+
+  np->syscall_mask = p->syscall_mask; // lab2-syscall: The child process inherits syscall_trace from the parent process.
 
   pid = np->pid;
 
