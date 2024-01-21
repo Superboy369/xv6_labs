@@ -27,6 +27,9 @@ kvminit()
   // uart registers
   kvmmap(UART0, UART0, PGSIZE, PTE_R | PTE_W);
 
+  // printf("page table %p\n",kernel_pagetable);
+  // vmprint(kernel_pagetable,0); // lab_3: add
+
   // virtio mmio disk interface
   kvmmap(VIRTIO0, VIRTIO0, PGSIZE, PTE_R | PTE_W);
 
@@ -438,5 +441,37 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return 0;
   } else {
     return -1;
+  }
+}
+
+// lab_3:page tables add the print page tables function
+void vmprint(pagetable_t pagetable){
+  printf("page table %p\n",pagetable);
+  pgtlbprint(pagetable,0);
+}
+// lab_3:page tables add the print page tables function
+void pgtlbprint(pagetable_t pagetable,uint64 deepth){
+  // there are 2^9 = 512 PTEs in a page table.
+  for(int i = 0; i < 512; i++){
+    pte_t pte = pagetable[i];
+    if((pte & PTE_V)){
+      switch(deepth){
+        case 0:
+          printf("..%d: pte %p pa %p\n",i,pte,PTE2PA(pte));
+          break;
+        case 1:
+          printf(".. ..%d: pte %p pa %p\n",i,pte,PTE2PA(pte));
+          break;
+        case 2:
+          printf(".. .. ..%d: pte %p pa %p\n",i,pte,PTE2PA(pte));
+          break;
+        default:;
+      }
+      if((pte & (PTE_R | PTE_W | PTE_X)) == 0){ // if is not leaf of the page tables
+        // this PTE points to a lower-level page table.
+        uint64 child = PTE2PA(pte);
+        pgtlbprint((pagetable_t)child,deepth + 1);
+      }
+    }
   }
 }

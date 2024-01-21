@@ -178,6 +178,8 @@ uint64          walkaddr(pagetable_t, uint64);
 int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
+void            vmprint(pagetable_t); // lab_3:page tables add print pages tables function
+void            pgtlbprint(pagetable_t,uint64); // lab_3:page tables add print pages tables function
 
 // plic.c
 void            plicinit(void);
