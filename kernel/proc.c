@@ -18,6 +18,7 @@ struct spinlock pid_lock;
 extern void forkret(void);
 static void wakeup1(struct proc *chan);
 static void freeproc(struct proc *p);
+static struct proc* allocproc(void); // lab_3:page tables add
 
 extern char trampoline[]; // trampoline.S
 
@@ -31,15 +32,15 @@ procinit(void)
   for(p = proc; p < &proc[NPROC]; p++) {
       initlock(&p->lock, "proc");
 
-      // Allocate a page for the process's kernel stack.
-      // Map it high in memory, followed by an invalid
-      // guard page.
-      char *pa = kalloc();
-      if(pa == 0)
-        panic("kalloc");
-      uint64 va = KSTACK((int) (p - proc));
-      kvmmap(va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
-      p->kstack = va;
+      // // Allocate a page for the process's kernel stack.
+      // // Map it high in memory, followed by an invalid
+      // // guard page.
+      // char *pa = kalloc();
+      // if(pa == 0)
+      //   panic("kalloc");
+      // uint64 va = KSTACK((int) (p - proc));
+      // kvmmap(va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
+      // p->kstack = va;
   }
   kvminithart();
 }
@@ -85,50 +86,50 @@ allocpid() {
   return pid;
 }
 
-// Look in the process table for an UNUSED proc.
-// If found, initialize state required to run in the kernel,
-// and return with p->lock held.
-// If there are no free procs, or a memory allocation fails, return 0.
-static struct proc*
-allocproc(void)
-{
-  struct proc *p;
+// // Look in the process table for an UNUSED proc.
+// // If found, initialize state required to run in the kernel,
+// // and return with p->lock held.
+// // If there are no free procs, or a memory allocation fails, return 0.
+// static struct proc*
+// allocproc(void)
+// {
+//   struct proc *p;
 
-  for(p = proc; p < &proc[NPROC]; p++) {
-    acquire(&p->lock);
-    if(p->state == UNUSED) {
-      goto found;
-    } else {
-      release(&p->lock);
-    }
-  }
-  return 0;
+//   for(p = proc; p < &proc[NPROC]; p++) {
+//     acquire(&p->lock);
+//     if(p->state == UNUSED) {
+//       goto found;
+//     } else {
+//       release(&p->lock);
+//     }
+//   }
+//   return 0;
 
-found:
-  p->pid = allocpid();
+// found:
+//   p->pid = allocpid();
 
-  // Allocate a trapframe page.
-  if((p->trapframe = (struct trapframe *)kalloc()) == 0){
-    release(&p->lock);
-    return 0;
-  }
+//   // Allocate a trapframe page.
+//   if((p->trapframe = (struct trapframe *)kalloc()) == 0){
+//     release(&p->lock);
+//     return 0;
+//   }
 
-  // An empty user page table.
-  p->pagetable = proc_pagetable(p);
-  if(p->pagetable == 0){
-    freeproc(p);
-    release(&p->lock);
-    return 0;
-  }
+//   // An empty user page table.
+//   p->pagetable = proc_pagetable(p);
+//   if(p->pagetable == 0){
+//     freeproc(p);
+//     release(&p->lock);
+//     return 0;
+//   }
 
-  // Set up new context to start executing at forkret,
-  // which returns to user space.
-  memset(&p->context, 0, sizeof(p->context));
-  p->context.ra = (uint64)forkret;
-  p->context.sp = p->kstack + PGSIZE;
+//   // Set up new context to start executing at forkret,
+//   // which returns to user space.
+//   memset(&p->context, 0, sizeof(p->context));
+//   p->context.ra = (uint64)forkret;
+//   p->context.sp = p->kstack + PGSIZE;
 
-  return p;
-}
+//   return p;
+// }
 
 // free a proc structure and the data hanging from it,
 // including user pages.
@@ -150,6 +151,15 @@ freeproc(struct proc *p)
   p->killed = 0;
   p->xstate = 0;
   p->state = UNUSED;
+
+   // lab_3:add the one kernel page tables per process
+   void *kstack_pa = (void *)kvmpa(p->pro_kernel_pagetable,p->kstack);
+   kfree(kstack_pa);
+   p->kstack = 0;
+   kvm_free_pagetable(p->pro_kernel_pagetable);
+   p->pro_kernel_pagetable = 0;
+   p->state = UNUSED;
+
 }
 
 // Create a user page table for a given process,
@@ -473,7 +483,15 @@ scheduler(void)
         // before jumping back to us.
         p->state = RUNNING;
         c->proc = p;
+
+        // lab_3:add the one kernel page tables per process
+        w_satp(MAKE_SATP(p->pro_kernel_pagetable));
+        sfence_vma();
+
         swtch(&c->context, &p->context);
+
+        // lab_3:add the one kernel page tables per process
+        kvminithart();
 
         // Process is done running for now.
         // It should have changed its p->state before coming back.
@@ -696,4 +714,63 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+// lab_3:add the one kernel page tables per process
+// modified from the original
+// Look in the process table for an UNUSED proc.
+// If found, initialize state required to run in the kernel,
+// and return with p->lock held.
+// If there are no free procs, or a memory allocation fails, return 0.
+static struct proc*
+allocproc(void)
+{
+  struct proc *p;
+
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state == UNUSED) {
+      goto found;
+    } else {
+      release(&p->lock);
+    }
+  }
+  return 0;
+
+found:
+  p->pid = allocpid();
+
+  // Allocate a trapframe page.
+  if((p->trapframe = (struct trapframe *)kalloc()) == 0){
+    release(&p->lock);
+    return 0;
+  }
+
+  // An empty user page table.
+  p->pagetable = proc_pagetable(p);
+  if(p->pagetable == 0){
+    freeproc(p);
+    release(&p->lock);
+    return 0;
+  }
+
+  // lab_3:add the one kernel page tables per process
+  p->pro_kernel_pagetable = (pagetable_t) kalloc();
+  memset(p->pro_kernel_pagetable,0,PGSIZE);
+  kvm_map_pagetable(p->pro_kernel_pagetable);
+  char *pa = kalloc();
+  if(pa == 0){
+    panic("kalloc");
+  }
+  uint64 va = KSTACK((int)0);
+  kvmmap(p->pro_kernel_pagetable,(uint64)va,(uint64)pa,PGSIZE,PTE_R | PTE_W);
+  p->kstack = va;
+
+  // Set up new context to start executing at forkret,
+  // which returns to user space.
+  memset(&p->context, 0, sizeof(p->context));
+  p->context.ra = (uint64)forkret;
+  p->context.sp = p->kstack + PGSIZE;
+
+  return p;
 }
