@@ -182,6 +182,10 @@ int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
 void            vmprint(pagetable_t); // lab_3:page tables add print pages tables function
 void            pgtlbprint(pagetable_t,uint64); // lab_3:page tables add print pages tables function
+int             copyin_new(pagetable_t,char *,uint64,uint64); // lab_3:page tables simplify copyin/copyinstr added
+int             copyinstr_new(pagetable_t,char *,uint64,uint64); // lab_3:page tables simplify copyin/copyinstr added
+int             kvmcopymappings(pagetable_t,pagetable_t,uint64,uint64); // lab_3:page tables simplify copyin/copyinstr added
+uint64          kvmdealloc(pagetable_t,uint64,uint64); // lab_3:page tables simplify copyin/copyinstr added
 
 // plic.c
 void            plicinit(void);

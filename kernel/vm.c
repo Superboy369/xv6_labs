@@ -382,23 +382,25 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
 int
 copyin(pagetable_t pagetable, char *dst, uint64 srcva, uint64 len)
 {
-  uint64 n, va0, pa0;
+  // lab_3:page tables simplify copyin/copyinstr modified
+  // uint64 n, va0, pa0;
 
-  while(len > 0){
-    va0 = PGROUNDDOWN(srcva);
-    pa0 = walkaddr(pagetable, va0);
-    if(pa0 == 0)
-      return -1;
-    n = PGSIZE - (srcva - va0);
-    if(n > len)
-      n = len;
-    memmove(dst, (void *)(pa0 + (srcva - va0)), n);
+  // while(len > 0){
+  //   va0 = PGROUNDDOWN(srcva);
+  //   pa0 = walkaddr(pagetable, va0);
+  //   if(pa0 == 0)
+  //     return -1;
+  //   n = PGSIZE - (srcva - va0);
+  //   if(n > len)
+  //     n = len;
+  //   memmove(dst, (void *)(pa0 + (srcva - va0)), n);
 
-    len -= n;
-    dst += n;
-    srcva = va0 + PGSIZE;
-  }
-  return 0;
+  //   len -= n;
+  //   dst += n;
+  //   srcva = va0 + PGSIZE;
+  // }
+  // return 0;
+  return copyin_new(pagetable,dst,srcva,len);
 }
 
 // Copy a null-terminated string from user to kernel.
@@ -408,40 +410,43 @@ copyin(pagetable_t pagetable, char *dst, uint64 srcva, uint64 len)
 int
 copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
 {
-  uint64 n, va0, pa0;
-  int got_null = 0;
+  // uint64 n, va0, pa0;
+  // int got_null = 0;
 
-  while(got_null == 0 && max > 0){
-    va0 = PGROUNDDOWN(srcva);
-    pa0 = walkaddr(pagetable, va0);
-    if(pa0 == 0)
-      return -1;
-    n = PGSIZE - (srcva - va0);
-    if(n > max)
-      n = max;
+  // while(got_null == 0 && max > 0){
+  //   va0 = PGROUNDDOWN(srcva);
+  //   pa0 = walkaddr(pagetable, va0);
+  //   if(pa0 == 0)
+  //     return -1;
+  //   n = PGSIZE - (srcva - va0);
+  //   if(n > max)
+  //     n = max;
 
-    char *p = (char *) (pa0 + (srcva - va0));
-    while(n > 0){
-      if(*p == '\0'){
-        *dst = '\0';
-        got_null = 1;
-        break;
-      } else {
-        *dst = *p;
-      }
-      --n;
-      --max;
-      p++;
-      dst++;
-    }
+  //   char *p = (char *) (pa0 + (srcva - va0));
+  //   while(n > 0){
+  //     if(*p == '\0'){
+  //       *dst = '\0';
+  //       got_null = 1;
+  //       break;
+  //     } else {
+  //       *dst = *p;
+  //     }
+  //     --n;
+  //     --max;
+  //     p++;
+  //     dst++;
+  //   }
 
-    srcva = va0 + PGSIZE;
-  }
-  if(got_null){
-    return 0;
-  } else {
-    return -1;
-  }
+  //   srcva = va0 + PGSIZE;
+  // }
+  // if(got_null){
+  //   return 0;
+  // } else {
+  //   return -1;
+  // }
+  
+  // lab_3:page tables simplify copyin/copyinstr added
+  return copyinstr_new(pagetable,dst,srcva,max);
 }
 
 // lab_3:page tables add the print page tables function
@@ -483,6 +488,8 @@ void kvminit(){
   memset(kernel_pagetable,0,PGSIZE);
 
   kvm_map_pagetable(kernel_pagetable);
+  // lab_3:page tables simplify copyin/copyinstr modified
+  kvmmap(kernel_pagetable,CLINT, CLINT, 0x10000, PTE_R | PTE_W);
 }
 
 // lab_3:add the one kernel page tables per process
@@ -500,8 +507,9 @@ void kvm_map_pagetable(pagetable_t cur_pagetable){
   // virtio mmio disk interface
   kvmmap(cur_pagetable,VIRTIO0, VIRTIO0, PGSIZE, PTE_R | PTE_W);
 
-  // CLINT
-  kvmmap(cur_pagetable,CLINT, CLINT, 0x10000, PTE_R | PTE_W);
+  // lab_3:page tables simplify copyin/copyinstr modified
+  // // CLINT
+  // kvmmap(cur_pagetable,CLINT, CLINT, 0x10000, PTE_R | PTE_W);
 
   // PLIC
   kvmmap(cur_pagetable,PLIC, PLIC, 0x400000, PTE_R | PTE_W);
@@ -560,4 +568,44 @@ void kvm_free_pagetable(pagetable_t cur_pagetable){
     }
   }
   kfree((void*)cur_pagetable);
+}
+
+// lab_3:page tables simplify copyin/copyinstr added
+int kvmcopymappings(pagetable_t src,pagetable_t dst,uint64 start,uint64 sz){
+  pte_t *pte;
+  uint64 pa,i;
+  uint flags;
+
+  for(i = PGROUNDUP(start);i < start + sz;i += PGSIZE){
+    if((pte = walk(src,i,0)) == 0)
+      panic("kvmcopymappings: pte should exist");
+    if((*pte & PTE_V) == 0)
+      panic("kvmcopymappings: page not present");
+    pa = PTE2PA(*pte);
+
+    flags = PTE_FLAGS(*pte) & ~PTE_U;
+    if(mappages(dst,i,PGSIZE,pa,flags) != 0){
+      goto err;
+    }
+  }
+
+  return 0;
+
+  err:
+  uvmunmap(dst,PGROUNDUP(start),(i - PGROUNDUP(start)) / PGSIZE,0);
+  return -1;
+}
+// lab_3:page tables simplify copyin/copyinstr added
+uint64
+kvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz)
+{
+  if(newsz >= oldsz)
+    return oldsz;
+
+  if(PGROUNDUP(newsz) < PGROUNDUP(oldsz)){
+    int npages = (PGROUNDUP(oldsz) - PGROUNDUP(newsz)) / PGSIZE;
+    uvmunmap(pagetable, PGROUNDUP(newsz), npages, 0);
+  }
+
+  return newsz;
 }
