@@ -188,3 +188,8 @@ void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+// lab4 traps: the third part of the lab added
+// sysproc.c
+uint64 sigalarm(int ticks,void (*handler)());  // lab4 traps: in the third of the lab added
+uint64 sigreturn(void);  // lab4 traps: in the third of the lab added

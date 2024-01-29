@@ -76,9 +76,26 @@ usertrap(void)
   if(p->killed)
     exit(-1);
 
+  // // give up the CPU if this is a timer interrupt.
+  // if(which_dev == 2)
+  //   yield();
+
+  // lab4 traps: the third part of the lab added
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2)
+  if(which_dev == 2){
+    if(p->alarm_interval != 0){
+      if(--p->alarm_ticks <= 0){
+        if(!p->handler_excuting){
+          p->alarm_ticks = p->alarm_interval;
+          *p->alarm_trapframe = *p->trapframe;
+          p->trapframe->epc = (uint64)p->alarm_handler;
+          p->handler_excuting = 1;
+        }
+      }
+    }
     yield();
+  }
+    
 
   usertrapret();
 }
@@ -217,4 +234,21 @@ devintr()
     return 0;
   }
 }
+
+ // lab4 traps: the third part of the lab added
+ uint64 sigalarm(int ticks,void(*handler)()){
+  struct proc *p = myproc();
+  p->alarm_interval = ticks;
+  p->alarm_handler = handler;
+  p->alarm_ticks = ticks;
+  return 0;
+ }
+
+ // lab4 traps: the third part of the lab added
+ uint64 sigreturn(){
+  struct proc *p = myproc();
+  *p->trapframe = *p->alarm_trapframe;
+  p->handler_excuting = 0;
+  return 0;
+ }
 

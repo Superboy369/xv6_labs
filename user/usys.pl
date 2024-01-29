@@ -36,3 +36,5 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
+entry("sigalarm");   # lab4 traps: the third part of the lab added
+entry("sigreturn");    # lab4 traps: the third part of the lab added

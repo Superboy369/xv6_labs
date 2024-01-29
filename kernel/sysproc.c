@@ -100,3 +100,22 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+ // lab4 traps: the third part of the lab added
+uint64 sys_sigalarm(void){
+  int ticks;
+  uint64 handler;
+  if(argint(0,&ticks) < 0){
+    return -1;
+  }
+  if(argaddr(1,&handler) < 0){
+    return -1;
+  }
+
+  return sigalarm(ticks,(void(*)())(handler));
+}
+
+ // lab4 traps: the third part of the lab added
+ uint64 sys_sigreturn(void){
+  return sigreturn();
+ }

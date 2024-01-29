@@ -23,6 +23,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int sigalarm(int ticks,void (*handler)());  // lab4 traps: in the third of the lab added
+int sigreturn(void);  // lab4 traps: in the third of the lab added
 
 // ulib.c
 int stat(const char*, struct stat*);
