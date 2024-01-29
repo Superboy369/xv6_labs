@@ -58,6 +58,11 @@ sys_sleep(void)
   int n;
   uint ticks0;
 
+  #ifdef MY_SOL_TRAPS
+  // lab4:traps added
+  backtrace();
+  #endif
+
   if(argint(0, &n) < 0)
     return -1;
   acquire(&tickslock);

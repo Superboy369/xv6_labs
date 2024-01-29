@@ -81,6 +81,9 @@ void            printf(char*, ...);
 void            panic(char*) __attribute__((noreturn));
 void            printfinit(void);
 
+// lab4:traps added
+void            backtrace(void);
+
 // proc.c
 int             cpuid(void);
 void            exit(int);
