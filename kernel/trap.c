@@ -67,11 +67,22 @@ usertrap(void)
     syscall();
   } else if((which_dev = devintr()) != 0){
     // ok
+  } else if(r_scause() == 15 || r_scause() == 13) {
+    // lab5:added
+    uint64 va;
+    va = r_stval();
+    if(is_lazyalloc(va)){
+      if(lazyalloc(va) < 0){
+        p->killed = 1;
+      }
+    }else{
+      p->killed = 1;
+    }
   } else {
-    printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
-    printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
-    p->killed = 1;
-  }
+      printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
+      printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
+      p->killed = 1;
+    }
 
   if(p->killed)
     exit(-1);
