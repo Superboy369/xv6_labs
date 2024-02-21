@@ -8,5 +8,8 @@ struct buf {
   struct buf *prev; // LRU cache list
   struct buf *next;
   uchar data[BSIZE];
+
+  // lab8: the second part of locks lab added
+  uint timestamp;
 };
 
