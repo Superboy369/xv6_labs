@@ -5,9 +5,9 @@ xv6是MIT6.S081课程中的教学操作系统xv6，它基于早期的UNIX操作�
 ## labs
 MIT6.S081的labs实现形式为每个lab一个分支，了解实验具体内容请看lab对应的分支下的README。
 ### Lab Utilities
-util分支下README url: https://github.com/Superboy369/xv6_labs/blob/util/README.md
+[Util README](https://github.com/Superboy369/xv6_labs/blob/util/README.md)
 ### Lab System calls
-syscall分支下README url: 待添加
+[Syscall README](https://github.com/Superboy369/xv6_labs/blob/syscall/README.md)
 ### Lab Page tables
 pgtbl分支下README url: 待添加
 ### Lab Traps
