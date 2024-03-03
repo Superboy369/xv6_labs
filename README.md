@@ -11,7 +11,7 @@ MIT6.S081的labs实现形式为每个lab一个分支，了解实验具体内容�
 ### Lab Page tables
 [pgtbl README](https://github.com/Superboy369/xv6_labs/blob/pgtbl/README.md)
 ### Lab Traps
-traps分支下README url: 待添加
+[traps README](https://github.com/Superboy369/xv6_labs/blob/traps/README.md)
 ### Lab Lazy alloction
 lazy分支下README url: 待添加
 ### Lab Copy on-write
