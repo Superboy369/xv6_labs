@@ -1,7 +1,9 @@
 # Lab System calls
 这个实验需要在在系统中添加两个新的系统调用，一个trace，一个userinfo，重点在于理解系统调用在内核中的执行流程。
 ## System call tracing
-实现一个新的系统调用，首先需要理解系统调用在用户和内核中的执行流程。
+- 实现一个新的系统调用——trace，这个系统调用给xv6增添了系统调用跟踪功能，调用trace的进程及其子进程在之后的进行系统调用时，内核都会打印处一条信息包含进程id、系统调用的名称和返回值。
+     
+要实现首先需要理解系统调用在用户和内核中的执行流程。
 ### 系统调用执行流程
 
 ![xv6系统调用流程.drawio.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c38801b284eb4c8da36e743790e32700~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=631&h=601&s=45744&e=png&a=1&b=f6cccb)
