@@ -15,14 +15,14 @@ MIT6.S081的labs实现形式为每个lab一个分支，了解实验具体内容�
 ### Lab Lazy alloction
 [lazy README](https://github.com/Superboy369/xv6_labs/blob/lazy/README.md)
 ### Lab Copy on-write
-cow分支下README url: 待添加
+[cow README](https://github.com/Superboy369/xv6_labs/blob/cow/README.md)
 ### Lab Multithreading
-thread分支下README url: 待添加
+thread分支下README: 待添加
 ### Lab Lock
-lock分支下README url: 待添加
+lock分支下README: 待添加
 ### Lab File system
-fs分支下README url: 待添加
+fs分支下README: 待添加
 ### Lab mmap
-mmap分支下README url: 待添加
+mmap分支下README: 待添加
 ### Lab network driver
-net分支下README url: 待添加
+net分支下README: 待添加
