@@ -1,4 +1,4 @@
-# Lab6:Copy-on-Write Fork for xv6
+# Lab: Copy-on-Write Fork for xv6
 这个*lab*是要*xv6*增添新特性*COW fork()*。
 ## 为何增添
 在未修改的*xv6*中，`fork()`系统调用会复制父进程的页表和对应的物理页给子进程，如果父进程地址空间很大，那么`fork()`系统调用会耗费很长的时间进行地址空间的复制。更糟糕的是，大部分的进程在调用系统`fork()`之后会紧接着调用`exec()`，`exec()`会丢弃之前所有`fork()`复制的地址空间，相当于之前的`fork()`复制是无效的。
