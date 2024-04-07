@@ -1,11 +1,11 @@
 # Lab Utilities
 - 这个实验中要求实现的是五个*shell*命令，其实就是编写5个c语言的可执行文件，要完成指定的工作，分别为*sleep*、*pingpong*、*primes*、*find*、*xargs*。
 - 这个实验目的是理解具体的*shell*命令的原理，理解*shell*命令与系统调用之间的关系，并且获取一些编写应用程序的经验。
-## sleep
+## sleep (easy)
 这个程序编写很简单，就是获取传给*main*函数的参数，并且调用系统调用`sleep()`。
-## pingpong
+## pingpong (easy)
 *pingpong*实现中，父进程`fork()`创建子进程，父子进程通过定义的*pipe*管道传输数据，父进程需要等待子进程的退出。
-## primes
+## primes (moderate)/(hard)
 这个部分比较有意思，使用多进程和多管道实现了筛法求质数。   
 - 当前进程要从左边的管道中拿出数字筛掉当前第一个数(质数)的倍数之后放入右管道，而其子进程则传递管道参数继续重复。
 - 使用多进程和管道，每一个进程作为一个 *stage*，筛掉某个素数的所有倍数（筛法）。
@@ -16,9 +16,9 @@
 ```c
 #define NOFILE 16 // open files per process
 ```
-## find
+## find (moderate)
 *find*实现的是查找指定目录下的指定文件。      
 采用递归的方式，递归函数的目的是遍历当前目录文件的所有文件查找指定文件，如果为普通文件则看其名字是否与指定*find*的文件相同，否则为目录文件则递归的调用函数。
 
-## xargs
+## xargs (moderate)
 实现了类*linux*的*xargs*命令，为命令增加调用参数。实现是将标准输入中的字符串按照行来读入依次添加到定义的*argument*数组中，并调用`exec(argv[1],argument)`系统调用来执行argv\[1\]中原本指定的程序。
