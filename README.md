@@ -1,4 +1,4 @@
-# Lab Page tables
+# Lab: page tables
 这个实验由三部分组成，打印指定页表、给每个进程的内核增添内核页表、使用添加的进程内核页表简化`copyin()`和`copyinstr()`两个函数。
 ## Print a page table (easy)
 这个部分是实现一个`vmprint()`的函数，他打印指定页表的*PTE*内容。
