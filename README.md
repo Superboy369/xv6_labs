@@ -1,4 +1,4 @@
-# Lab5: xv6 lazy page allocation
+# Lab: xv6 lazy page allocation
 这个*lab*要实现*page table*的*lazy allocation*。
 ## 思想
 在用户调用`sbrk()`系统调用增加堆空间时，不立即分配实际的物理内存，将其推迟到发生*page fault*时在分配。这样做的好处是，大部分应用只会使用自己申请的所有地址空间的一部分，*lazy page alloction*可以只分配用户真正会使用的那一部分物理内存，增加了物理内存的利用率。
