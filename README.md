@@ -1,4 +1,4 @@
-# Lab Utilities
+# Lab: Xv6 and Unix utilities
 - 这个实验中要求实现的是五个*shell*命令，其实就是编写5个c语言的可执行文件，要完成指定的工作，分别为*sleep*、*pingpong*、*primes*、*find*、*xargs*。
 - 这个实验目的是理解具体的*shell*命令的原理，理解*shell*命令与系统调用之间的关系，并且获取一些编写应用程序的经验。
 ## sleep (easy)
