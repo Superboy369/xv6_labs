@@ -1,9 +1,9 @@
 # Lab5: xv6 lazy page allocation
-这个Lab要实现page table的lazy allocation。
+这个*lab*要实现*page table*的*lazy allocation*。
 ## 思想
-在用户调用`sbrk()`系统调用增加堆空间时，不立即分配实际的物理内存，将其推迟到发生page fault时在分配。这样做的好处是，大部分应用只会使用自己申请的所有地址空间的一部分，lazy page alloction可以只分配用户真正会使用的那一部分物理内存，增加了物理内存的利用率。
-## 实现
-在`sys_sbrk()`中，修改代码，如果时增加内存，则使其只是增加进程结构体的sz字段，而不进行物理内存分配，如果是减少内存，则直接抹除页表映射和free实际的物理页即可。
+在用户调用`sbrk()`系统调用增加堆空间时，不立即分配实际的物理内存，将其推迟到发生*page fault*时在分配。这样做的好处是，大部分应用只会使用自己申请的所有地址空间的一部分，*lazy page alloction*可以只分配用户真正会使用的那一部分物理内存，增加了物理内存的利用率。
+## 实现 (moderate)
+在`sys_sbrk()`中，修改代码，如果时增加内存，则使其只是增加进程结构体的sz字段，而不进行物理内存分配，如果是减少内存，则直接抹除页表映射和*free*实际的物理页即可。
 
 ```c
 uint64
@@ -26,7 +26,7 @@ sys_sbrk(void)
     return addr;
 }
 ```
-当需要访问本应增加的堆内存时，会发生page fault，进入`usertrap()`，判断这个一个page fault，之后判断这是否是page lazy alloction的场景，如果是，则进行实际的物理内存的分配，否则直接杀掉进程。前者返回用户空间继续执行运行即可。
+当需要访问本应增加的堆内存时，会发生*page fault*，进入`usertrap()`，判断这个一个*page fault*，之后判断这是否是*page lazy alloction*的场景，如果是，则进行实际的物理内存的分配，否则直接杀掉进程。前者返回用户空间继续执行运行即可。
 
 ```c
 //
