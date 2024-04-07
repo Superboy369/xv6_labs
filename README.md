@@ -17,7 +17,7 @@ MIT6.S081的labs实现形式为每个lab一个分支，了解实验具体内容�
 ### Lab Copy on-write
 [cow README](https://github.com/Superboy369/xv6_labs/blob/cow/README.md)
 ### Lab Multithreading
-thread分支下README: 待添加
+[thread README](https://github.com/Superboy369/xv6_labs/blob/thread/README.md)
 ### Lab Lock
 lock分支下README: 待添加
 ### Lab File system
