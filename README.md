@@ -1,4 +1,4 @@
-# Lab:Multithreading
+# Lab: Multithreading
 这个*lab*分为三个部分：第一部分是实现用户级线程的创建、切换，第二部分是使用锁实现线程间的互斥，第三部分是使用锁和条件变量实现线程间的同步。
 ## Uthread: switching between threads (moderate）
 这个部分是要实现用户级线程的创建以及切换。需要修改`thread_create()`、`thread_schedule()`和汇编语言源程序`thread_switch`。             
