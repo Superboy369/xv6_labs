@@ -1,4 +1,4 @@
-# Lab Traps
+# Lab: traps
 这个实验有三部分，第一部分为问答，第二部分为*backtrace*，第三部分为实现用户级中断/故障处理程序的一种初级形式。
 ## RISC-V assembly (easy)
 这个部分目的是要理解*RISC-V*指令集架构的汇编代码。
