@@ -1,4 +1,4 @@
-# Lab System calls
+# Lab: system calls
 这个实验需要在在系统中添加两个新的系统调用，一个*trace*，一个*userinfo*，重点在于理解系统调用在内核中的执行流程。
 ## System call tracing (moderate)
 - 实现一个新的系统调用——*trace*，这个系统调用给xv6增添了系统调用跟踪功能，调用*trace*的进程及其子进程在之后的进行系统调用时，内核都会打印处一条信息包含进程id、系统调用的名称和返回值。
